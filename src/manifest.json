@@ -1,0 +1,35 @@
+{
+    "name": "webDiplomacy-plugin",
+    "version": "1.0.0",
+    "description": "Add features to the webDiplomacy website",
+    "manifest_version": 2,
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "storage",
+        "notifications",
+        "http://*/",
+        "https://*/"
+    ],
+    "browser_action": {
+        "default_icon": "webDiplomacy-logo.png"
+    },
+    "icons": {
+        "16": "webDiplomacy-logo.png",
+        "48": "webDiplomacy-logo.png",
+        "128": "webDiplomacy-logo.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://www.webdiplomacy.net/index.php*"
+            ],
+            "js": ["constants.js", "core.js", "home-notifier.js"],
+            "run_at": "document_start"
+        }
+    ],
+    "background": {
+        "scripts": ["constants.js", "core.js", "background.js"],
+        "persistent": false
+    }
+}
