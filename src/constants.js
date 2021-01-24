@@ -1,11 +1,12 @@
 const StorageKeys = {
     extensionState: "extensionState",
     lastNoticeTimestamp: "lastNoticeTimestamp",
-    trackedGameIds: "trackedGameIds"
+    trackedGameIds: "trackedGameIds",
+    messengerConversationIds: "messengerConversationIds"
 };
 
 const MessageTypes = {
-    noticeNotification: "notice-notification"
+    newNotice: "new-notice"
 };
 
 const ExtensionStates = {
@@ -20,3 +21,5 @@ const NotificationTypes = {
     list: "list",
     progress: "progress"
 };
+
+const MessengerUrlPattern = "https://www.messenger.com/t/*";

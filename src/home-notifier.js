@@ -36,25 +36,26 @@ function checkForUpdates() {
 }
 
 function checkForNoticesUpdates(newDocument) {
-    const notices =  Array.prototype.map.call(newDocument.getElementsByClassName("homeNotice"), parseNotice);
+    const notices = Array.prototype.map.call(newDocument.getElementsByClassName("homeNotice"), parseNotice);
 
     chrome.storage.local.get([StorageKeys.lastNoticeTimestamp, StorageKeys.trackedGameIds], state => {
         const lastNoticeTimestamp = state[StorageKeys.lastNoticeTimestamp];
         const trackedGameIds = state[StorageKeys.trackedGameIds];
 
-        chrome.storage.local.set({ lastNoticeTimestamp: notices[0].unixTimestamp });
+        chrome.storage.local.set({ [StorageKeys.lastNoticeTimestamp]: notices[0].unixTimestamp });
         if (lastNoticeTimestamp) {
             const newNotices = notices.filter(notice => notice.unixTimestamp > lastNoticeTimestamp && trackedGameIds.includes(notice.gameId));
             if (newNotices.length > 0) {
                 // TODO Probably notify latest for each game or summarize each game?
                 console.log("New notices found!", newNotices);
-                chrome.runtime.sendMessage({ type: MessageTypes.noticeNotification, notice: newNotices[0] });
+                chrome.runtime.sendMessage({ type: MessageTypes.newNotice, notice: newNotices[0] });
             }
         }
     });
 }
 
 console.log("Running webDiplomacy-plugin/home-notifier");
-chrome.storage.local.set({ lastNoticeTimestamp: 1611031121, trackedGameIds: [341804] }); // TODO Make the trackedGameIds configurable
+// testTimestamp: 1611031121
+chrome.storage.local.set({ [StorageKeys.lastNoticeTimestamp]: 0, [StorageKeys.trackedGameIds]: [341804] }); // TODO Make the trackedGameIds configurable
 executeIfAllowed(checkForUpdates)();
 setInterval(executeIfAllowed(checkForUpdates), 10 * SECONDS)

@@ -26,6 +26,13 @@
             ],
             "js": ["constants.js", "core.js", "home-notifier.js"],
             "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "https://www.messenger.com/t/*"
+            ],
+            "js": ["constants.js", "core.js", "notify-in-messenger.js"],
+            "run_at": "document_start"
         }
     ],
     "background": {
