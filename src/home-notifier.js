@@ -99,8 +99,6 @@ function checkForNewMessages(newDocument) {
     chrome.storage.local.get([StorageKeys.gamesMessageStatuses, StorageKeys.trackedGameIds], state => {
         const trackedGameIds = state[StorageKeys.trackedGameIds];
         const gamesMessageStatuses = state[StorageKeys.gamesMessageStatuses];
-        console.log(gamesMessageStatuses);
-        console.log(newGamesMessageStatuses);
 
         for (const gameIdString in newGamesMessageStatuses) {
             const gameId = Number.parseInt(gameIdString, DECIMAL_RADIX);
