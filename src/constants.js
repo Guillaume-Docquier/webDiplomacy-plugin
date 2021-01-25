@@ -2,11 +2,13 @@ const StorageKeys = {
     extensionState: "extensionState",
     lastNoticeTimestamp: "lastNoticeTimestamp",
     trackedGameIds: "trackedGameIds",
-    messengerConversationIds: "messengerConversationIds"
+    messengerConversationIds: "messengerConversationIds",
+    gamesMessageStatuses: "gamesMessageStatuses"
 };
 
 const MessageTypes = {
-    newNotice: "new-notice"
+    newNotice: "newNotice",
+    newMessages: "newMessages"
 };
 
 const ExtensionStates = {
@@ -23,3 +25,5 @@ const NotificationTypes = {
 };
 
 const MessengerUrlPattern = "https://www.messenger.com/t/*";
+
+const DECIMAL_RADIX = 10;

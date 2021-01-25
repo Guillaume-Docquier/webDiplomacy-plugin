@@ -1,5 +1,6 @@
 const MessageHandlers = {
-    [MessageTypes.newNotice]: newNoticeHandler
+    [MessageTypes.newNotice]: newNoticeHandler,
+    [MessageTypes.newMessages]: newMessagesHandler
 };
 
 function newNoticeHandler({ notice }) {
@@ -21,7 +22,7 @@ function newNoticeHandler({ notice }) {
             const tabsToNotify = {};
             for (const { id: tabId, url } of messengerTabs) {
                 const urlParts = url.split("/");
-                const conversationId = Number.parseInt(urlParts[urlParts.length - 1]);
+                const conversationId = Number.parseInt(urlParts[urlParts.length - 1], DECIMAL_RADIX);
                 if (messengerConversationIds.includes(conversationId)) {
                     tabsToNotify[conversationId] = tabId;
                 }
@@ -34,6 +35,19 @@ function newNoticeHandler({ notice }) {
                 chrome.tabs.sendMessage(tabId, { notice, conversationId });
             }
         });
+    });
+}
+
+function newMessagesHandler({ newMessages }) {
+    console.log("Handling new webDiplomacy messages");
+    const { gameId, gameName, from } = newMessages;
+
+    chrome.notifications.create(`${gameId}-${Date.now()}`, {
+        type: NotificationTypes.basic,
+        iconUrl: "webDiplomacy-logo.png",
+        title: `Diplomacy: ${gameName}`,
+        message: `New messages from ${from.join(", ")}`,
+        contextMessage: "Web Diplomacy Update"
     });
 }
 
