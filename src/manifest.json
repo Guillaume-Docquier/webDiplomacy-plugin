@@ -8,8 +8,8 @@
         "activeTab",
         "storage",
         "notifications",
-        "http://*/",
-        "https://*/"
+        "http*://www.webdiplomacy.net/index.php*",
+        "http*://www.messenger.com/t/*"
     ],
     "browser_action": {
         "default_icon": "webDiplomacy-logo.png"
