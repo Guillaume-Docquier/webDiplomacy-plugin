@@ -57,7 +57,7 @@ function messageListener(request, sender, sendResponse) {
 
 function toggleExtensionState() {
     chrome.storage.local.get([StorageKeys.extensionState], state => {
-        const extensionState = state[StorageKeys.extensionState] || ExtensionStates.on;
+        const extensionState = state[StorageKeys.extensionState];
 
         const newExtensionState = extensionState === ExtensionStates.on ? ExtensionStates.off : ExtensionStates.on;
         chrome.storage.local.set({ [StorageKeys.extensionState]: newExtensionState });
@@ -65,6 +65,19 @@ function toggleExtensionState() {
     });
 };
 
+function initializeBrowserActionIcon() {
+    chrome.storage.local.get([StorageKeys.extensionState], state => {
+        let extensionState = state[StorageKeys.extensionState];
+        if (!extensionState) {
+            extensionState = ExtensionStates.on;
+            chrome.storage.local.set({ [StorageKeys.extensionState]: extensionState });
+        }
+    
+        chrome.browserAction.setIcon({ path: `webDiplomacy-logo-${extensionState}.png`});
+    });
+}
+
+initializeBrowserActionIcon();
 chrome.storage.local.set({ [StorageKeys.messengerConversationIds]: [3315564371868011] }); // TODO Make the convo configurable
 chrome.browserAction.onClicked.addListener(toggleExtensionState);
 chrome.runtime.onMessage.addListener(messageListener);
