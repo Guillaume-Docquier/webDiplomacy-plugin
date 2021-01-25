@@ -15,7 +15,7 @@ function newNoticeHandler({ notice }) {
         contextMessage: "Web Diplomacy Update"
     });
 
-    chrome.tabs.query({ url: MessengerUrlPattern }, messengerTabs => {
+    chrome.tabs.query({ url: MESSENGER_URL_PATTERN }, messengerTabs => {
         chrome.storage.local.get([StorageKeys.messengerConversationIds], state => {
             const messengerConversationIds = state[StorageKeys.messengerConversationIds];
 

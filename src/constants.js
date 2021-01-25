@@ -24,6 +24,6 @@ const NotificationTypes = {
     progress: "progress"
 };
 
-const MessengerUrlPattern = "https://www.messenger.com/t/*";
+const MESSENGER_URL_PATTERN = "https://www.messenger.com/t/*";
 
 const DECIMAL_RADIX = 10;
