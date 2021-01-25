@@ -8,8 +8,8 @@
         "activeTab",
         "storage",
         "notifications",
-        "http://www.webdiplomacy.net/index.php*",
-        "https://www.messenger.com/t/*"
+        "*://www.webdiplomacy.net/*",
+        "*://www.messenger.com/t/*"
     ],
     "browser_action": {
         "default_icon": "webDiplomacy-logo.png"
@@ -22,14 +22,15 @@
     "content_scripts": [
         {
             "matches": [
-                "http://www.webdiplomacy.net/index.php*"
+                "*://www.webdiplomacy.net/",
+                "*://www.webdiplomacy.net/index.php*"
             ],
             "js": ["constants.js", "core.js", "home-notifier.js"],
             "run_at": "document_start"
         },
         {
             "matches": [
-                "https://www.messenger.com/t/*"
+                "*://www.messenger.com/t/*"
             ],
             "js": ["constants.js", "core.js", "notify-in-messenger.js"],
             "run_at": "document_start"
