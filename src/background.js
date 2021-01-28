@@ -14,28 +14,6 @@ function newNoticeHandler({ notice }) {
         message: event,
         contextMessage: "Web Diplomacy Update"
     });
-
-    chrome.tabs.query({ url: MESSENGER_URL_PATTERN }, messengerTabs => {
-        chrome.storage.local.get([StorageKeys.messengerConversationIds], state => {
-            const messengerConversationIds = state[StorageKeys.messengerConversationIds];
-
-            const tabsToNotify = {};
-            for (const { id: tabId, url } of messengerTabs) {
-                const urlParts = url.split("/");
-                const conversationId = Number.parseInt(urlParts[urlParts.length - 1], DECIMAL_RADIX);
-                if (messengerConversationIds.includes(conversationId)) {
-                    tabsToNotify[conversationId] = tabId;
-                }
-            }
-
-            console.log(tabsToNotify);
-            for (const conversationId in tabsToNotify) {
-                const tabId = tabsToNotify[conversationId];
-                console.log(`Notifying messenger conversation "${conversationId}" of new notice`);
-                chrome.tabs.sendMessage(tabId, { notice, conversationId });
-            }
-        });
-    });
 }
 
 function newMessagesHandler({ newMessages }) {
@@ -78,6 +56,5 @@ function initializeBrowserActionIcon() {
 }
 
 initializeBrowserActionIcon();
-chrome.storage.local.set({ [StorageKeys.messengerConversationIds]: [3315564371868011] }); // TODO Make the convo configurable
 chrome.browserAction.onClicked.addListener(toggleExtensionState);
 chrome.runtime.onMessage.addListener(messageListener);

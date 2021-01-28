@@ -4,12 +4,9 @@
     "description": "Add features to the webDiplomacy website",
     "manifest_version": 2,
     "permissions": [
-        "tabs",
-        "activeTab",
         "storage",
         "notifications",
-        "*://www.webdiplomacy.net/*",
-        "*://www.messenger.com/t/*"
+        "*://www.webdiplomacy.net/*"
     ],
     "browser_action": {
         "default_icon": "webDiplomacy-logo.png"
@@ -26,13 +23,6 @@
                 "*://www.webdiplomacy.net/index.php*"
             ],
             "js": ["constants.js", "core.js", "home-notifier.js"],
-            "run_at": "document_start"
-        },
-        {
-            "matches": [
-                "*://www.messenger.com/t/*"
-            ],
-            "js": ["constants.js", "core.js", "notify-in-messenger.js"],
             "run_at": "document_start"
         }
     ],
