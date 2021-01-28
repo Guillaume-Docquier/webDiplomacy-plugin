@@ -40,13 +40,12 @@ function checkForUpdates() {
 function checkForNewNotices(newDocument) {
     const notices = Array.prototype.map.call(newDocument.getElementsByClassName("homeNotice"), parseNotice);
 
-    chrome.storage.local.get([StorageKeys.lastNoticeTimestamp, StorageKeys.trackedGameIds], state => {
+    chrome.storage.local.get([StorageKeys.lastNoticeTimestamp], state => {
         const lastNoticeTimestamp = state[StorageKeys.lastNoticeTimestamp];
-        const trackedGameIds = state[StorageKeys.trackedGameIds];
 
         chrome.storage.local.set({ [StorageKeys.lastNoticeTimestamp]: notices[0].unixTimestamp });
         if (lastNoticeTimestamp) {
-            const newNotices = notices.filter(notice => notice.unixTimestamp > lastNoticeTimestamp && trackedGameIds.includes(notice.gameId));
+            const newNotices = notices.filter(notice => notice.unixTimestamp > lastNoticeTimestamp);
             if (newNotices.length > 0) {
                 // TODO Probably notify latest for each game or summarize each game?
                 console.log("New notices found!", newNotices);
@@ -96,32 +95,29 @@ function checkForNewMessages(newDocument) {
             return acc;
         }, {});
 
-    chrome.storage.local.get([StorageKeys.gamesMessageStatuses, StorageKeys.trackedGameIds], state => {
-        const trackedGameIds = state[StorageKeys.trackedGameIds];
+    chrome.storage.local.get([StorageKeys.gamesMessageStatuses], state => {
         const gamesMessageStatuses = state[StorageKeys.gamesMessageStatuses];
 
         for (const gameIdString in newGamesMessageStatuses) {
             const gameId = Number.parseInt(gameIdString, DECIMAL_RADIX);
-            if (trackedGameIds.includes(gameId)) {
-                const gamesMessageStatus = gamesMessageStatuses[gameId];
-                if (gamesMessageStatus) {
-                    const gamesMessageData = gamesMessageStatus.messageData;
-                    const newGamesMessageData = newGamesMessageStatuses[gameId].messageData;
-                    const newSenders = [];
-                    for (const country in gamesMessageData) {
-                        if (!gamesMessageData[country] && newGamesMessageData[country]) {
-                            newSenders.push(country);
-                        }
+            const gamesMessageStatus = gamesMessageStatuses[gameId];
+            if (gamesMessageStatus) {
+                const gamesMessageData = gamesMessageStatus.messageData;
+                const newGamesMessageData = newGamesMessageStatuses[gameId].messageData;
+                const newSenders = [];
+                for (const country in gamesMessageData) {
+                    if (!gamesMessageData[country] && newGamesMessageData[country]) {
+                        newSenders.push(country);
                     }
+                }
 
-                    if (newSenders.length > 0) {
-                        console.log("New messages found!", gameId, newSenders);
-                        chrome.runtime.sendMessage({ type: MessageTypes.newMessages, newMessages: {
-                            gameId,
-                            gameName: newGamesMessageStatuses[gameId].gameName, //gamesMessageStatus.gameName,
-                            from: newSenders
-                        } });
-                    }
+                if (newSenders.length > 0) {
+                    console.log("New messages found!", gameId, newSenders);
+                    chrome.runtime.sendMessage({ type: MessageTypes.newMessages, newMessages: {
+                        gameId,
+                        gameName: newGamesMessageStatuses[gameId].gameName, //gamesMessageStatus.gameName,
+                        from: newSenders
+                    } });
                 }
             }
         }
@@ -149,7 +145,6 @@ console.log("Running webDiplomacy-plugin/home-notifier");
 }*/
 chrome.storage.local.set({
     [StorageKeys.lastNoticeTimestamp]: 0,
-    [StorageKeys.trackedGameIds]: [341804], // TODO Make the trackedGameIds configurable
     [StorageKeys.gamesMessageStatuses]: {}
 });
 executeIfAllowed(checkForUpdates)();

@@ -1,7 +1,6 @@
 const StorageKeys = {
     extensionState: "extensionState",
     lastNoticeTimestamp: "lastNoticeTimestamp",
-    trackedGameIds: "trackedGameIds",
     gamesMessageStatuses: "gamesMessageStatuses"
 };
 
