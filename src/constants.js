@@ -7,7 +7,9 @@ const StorageKeys = {
 const MessageTypes = {
     newNotice: "newNotice",
     newMessages: "newMessages",
-    fetchYourself: "fetchYourself"
+    fetchYourself: "fetchYourself",
+    newHomePage: "newHomePage",
+    updatePageContent: "updatePageContent"
 };
 
 const ExtensionStates = {
@@ -45,3 +47,5 @@ const WebdiplomacyPathsToPageMap = {
 };
 
 const GAME_ID_SEARCH_PARAM = "gameID";
+
+const MIME_TYPE_HTML = "text/html";

@@ -1,14 +1,20 @@
 const SYNCHRONOUS = false;
-const MIME_TYPE_HTML = "text/html";
 const MEMBERS_TABLE_COUNTRIES_ROW_INDEX = 0;
 const MEMBERS_TABLE_MESSAGES_ROW_INDEX = 2;
 
 const MessageHandlers = {
     [MessageTypes.fetchYourself]: fetchYourselfHandler,
+    [MessageTypes.updatePageContent]: updatePageContentHandler
 };
 
 function fetchYourselfHandler() {
-    console.log("fetchYourselfHandler");
+    const newContent = checkForUpdates();
+    chrome.runtime.sendMessage(createMessage(MessageTypes.newHomePage, { newContent }));
+}
+
+function updatePageContentHandler({ newContent }) {
+    const doc = domStringToDomElement(newContent);
+    document.body = doc.body;
 }
 
 function parseNotice(noticeDOMElement) {
@@ -24,15 +30,15 @@ function parseNotice(noticeDOMElement) {
 }
 
 function checkForUpdates() {
-    console.log("Checking for updates");
     const homePage = httpGet(window.location.href);
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(homePage, MIME_TYPE_HTML);
+    const doc = domStringToDomElement(homePage);
 
     checkForNewNotices(doc);
     checkForNewMessages(doc);
 
     document.body = doc.body;
+
+    return homePage;
 }
 
 function checkForNewNotices(newDocument) {
@@ -115,7 +121,7 @@ function checkForNewMessages(newDocument) {
                         gameId,
                         gameName: newGamesMessageStatuses[gameId].gameName,
                         from: newSenders
-                    }; 
+                    };
                     chrome.runtime.sendMessage(createMessage(MessageTypes.newMessages, newMessages));
                 }
             }
@@ -150,5 +156,4 @@ function initializeHomeState() {
 
 console.log("Running webDiplomacy-plugin/home-notifier");
 initializeHomeState();
-setIntervalStartNow(executeIfAllowed(checkForUpdates), 10 * SECONDS);
 chrome.runtime.onMessage.addListener(createMessageListener(MessageHandlers));

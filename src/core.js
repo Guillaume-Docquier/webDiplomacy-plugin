@@ -7,8 +7,9 @@ const executeIfAllowed = func => (...args) => {
     });
 }
 
-function getWebdiplomacyPageFromPathname(pathname) {
-    const path = pathname.replaceAll("/", "").replaceAll(".php", "");
+function getWebdiplomacyPageFromUrlString(urlString) {
+    const url = new URL(urlString);
+    const path = url.pathname.replaceAll("/", "").replaceAll(".php", "");
 
     return WebdiplomacyPathsToPageMap[path];
 }
@@ -34,5 +35,22 @@ function setIntervalStartNow(func, delay) {
 }
 
 const createMessageListener = MessageHandlers => (request, sender, sendResponse) => {
-    MessageHandlers[request.type](request, sender, sendResponse);
+    console.groupCollapsed(`Received ${request.type} message`);
+
+    const handler = MessageHandlers[request.type];
+    if (handler) {
+        console.log(`Handler found: ${handler.name}`);
+        handler(request, sender, sendResponse);
+    }
+    else {
+        console.error("No handler found!");
+    }
+
+    console.groupEnd();
 };
+
+function domStringToDomElement(domString) {
+    const parser = new DOMParser();
+
+    return parser.parseFromString(domString, MIME_TYPE_HTML);
+}

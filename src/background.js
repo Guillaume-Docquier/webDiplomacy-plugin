@@ -1,10 +1,10 @@
 const MessageHandlers = {
     [MessageTypes.newNotice]: newNoticeHandler,
-    [MessageTypes.newMessages]: newMessagesHandler
+    [MessageTypes.newMessages]: newMessagesHandler,
+    [MessageTypes.newHomePage]: newHomePageHandler
 };
 
 function newNoticeHandler({ notice }) {
-    console.log("Handling new webDiplomacy notice");
     const { gameId, unixTimestamp, event, gameName } = notice;
 
     chrome.notifications.create(`${gameId}-${unixTimestamp}`, {
@@ -17,7 +17,6 @@ function newNoticeHandler({ notice }) {
 }
 
 function newMessagesHandler({ newMessages }) {
-    console.log("Handling new webDiplomacy messages");
     const { gameId, gameName, from } = newMessages;
 
     chrome.notifications.create(`${gameId}-${Date.now()}`, {
@@ -29,8 +28,15 @@ function newMessagesHandler({ newMessages }) {
     });
 }
 
-function messageListener(request, sender, sendResponse) {
-    MessageHandlers[request.type](request, sender, sendResponse);
+function newHomePageHandler({ newContent }, sender) {
+    chrome.tabs.query({ url: WEBDIPLOMACY_URL_PATTERNS }, webDiplomacyTabs => {
+        if (webDiplomacyTabs && webDiplomacyTabs.length > 0) {
+            const tabsToUpdate = webDiplomacyTabs.filter(tab => getWebdiplomacyPageFromUrlString(tab.url) === WebdiplomacyPages.HOME && tab.id !== sender.tab.id);
+            for (let tab of tabsToUpdate) {
+                chrome.tabs.sendMessage(tab.id, createMessage(MessageTypes.updatePageContent, { newContent }));
+            }
+        }
+    });
 }
 
 function toggleExtensionState() {
@@ -65,9 +71,9 @@ function checkForUpdates() {
             }, {});
 
             for (let tab of webDiplomacyTabs) {
-                const url = new URL(tab.url);
-                const page = getWebdiplomacyPageFromPathname(url.pathname);
+                const page = getWebdiplomacyPageFromUrlString(tab.url);
                 if (page) {
+                    const url = new URL(tab.url);
                     tabsByPage[page].push({
                         ...tab,
                         url,
@@ -78,11 +84,12 @@ function checkForUpdates() {
 
             if (tabsByPage[WebdiplomacyPages.HOME].length > 0) {
                 // Ask a single home page to refresh
-                const { id: tabId } = tabsByPage[WebdiplomacyPages.HOME][0];
+                const tab = tabsByPage[WebdiplomacyPages.HOME][0];
 
                 console.log("Asking a home page to fetch itself");
-                chrome.tabs.sendMessage(tabId, createMessage(MessageTypes.fetchYourself));
-            } else if (tabsByPage[WebdiplomacyPages.GAME].length > 0) {
+                chrome.tabs.sendMessage(tab.id, createMessage(MessageTypes.fetchYourself));
+            }
+            else if (tabsByPage[WebdiplomacyPages.GAME].length > 0) {
                 // Ask a single game page of every game to refresh
                 const gamesAsked = {};
                 for (let { id: tabId, gameId } of tabsByPage[WebdiplomacyPages.GAME]) {
