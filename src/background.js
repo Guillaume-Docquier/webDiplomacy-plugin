@@ -55,6 +55,51 @@ function initializeBrowserActionIcon() {
     });
 }
 
+function checkForUpdates() {
+    chrome.tabs.query({ url: WEBDIPLOMACY_URL_PATTERNS }, webDiplomacyTabs => {
+        if (webDiplomacyTabs && webDiplomacyTabs.length > 0) {
+            const tabsByPage = Object.values(WebdiplomacyPages).reduce((pages, page) => {
+                pages[page] = [];
+
+                return pages;
+            }, {});
+
+            for (let tab of webDiplomacyTabs) {
+                const url = new URL(tab.url);
+                const page = getWebdiplomacyPageFromPathname(url.pathname);
+                if (page) {
+                    tabsByPage[page].push({
+                        ...tab,
+                        url,
+                        gameId: url.searchParams.get(GAME_ID_SEARCH_PARAM)
+                    });
+                }
+            }
+
+            if (tabsByPage[WebdiplomacyPages.HOME].length > 0) {
+                // Ask a single home page to refresh
+                const { id: tabId } = tabsByPage[WebdiplomacyPages.HOME][0];
+
+                console.log("Asking a home page to fetch itself");
+                chrome.tabs.sendMessage(tabId, createMessage(MessageTypes.fetchYourself));
+            } else if (tabsByPage[WebdiplomacyPages.GAME].length > 0) {
+                // Ask a single game page of every game to refresh
+                const gamesAsked = {};
+                for (let { id: tabId, gameId } of tabsByPage[WebdiplomacyPages.GAME]) {
+                    if (!gamesAsked[gameId]) {
+                        gamesAsked[gameId] = true;
+
+                        console.log(`Asking game ${gameId} to fetch itself`);
+                        chrome.tabs.sendMessage(tabId, createMessage(MessageTypes.fetchYourself));
+                    }
+                }
+            }
+        }
+    });
+}
+
+console.log("Running webDiplomacy-plugin/background");
 initializeBrowserActionIcon();
 chrome.browserAction.onClicked.addListener(toggleExtensionState);
-chrome.runtime.onMessage.addListener(messageListener);
+chrome.runtime.onMessage.addListener(createMessageListener(MessageHandlers));
+setIntervalStartNow(executeIfAllowed(checkForUpdates), 10 * SECONDS);

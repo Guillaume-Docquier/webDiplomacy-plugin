@@ -1,16 +1,14 @@
-const SECONDS = 1000;
-const MINUTES = 60 * SECONDS;
 const SYNCHRONOUS = false;
 const MIME_TYPE_HTML = "text/html";
 const MEMBERS_TABLE_COUNTRIES_ROW_INDEX = 0;
 const MEMBERS_TABLE_MESSAGES_ROW_INDEX = 2;
 
-function httpGet(url)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", url, SYNCHRONOUS);
-    xmlHttp.send(null);
-    return xmlHttp.responseText;
+const MessageHandlers = {
+    [MessageTypes.fetchYourself]: fetchYourselfHandler,
+};
+
+function fetchYourselfHandler() {
+    console.log("fetchYourselfHandler");
 }
 
 function parseNotice(noticeDOMElement) {
@@ -49,7 +47,7 @@ function checkForNewNotices(newDocument) {
             if (newNotices.length > 0) {
                 // TODO Probably notify latest for each game or summarize each game?
                 console.log("New notices found!", newNotices);
-                chrome.runtime.sendMessage({ type: MessageTypes.newNotice, notice: newNotices[0] });
+                chrome.runtime.sendMessage(createMessage(MessageTypes.newNotice, newNotices[0]));
             }
         }
     });
@@ -113,11 +111,12 @@ function checkForNewMessages(newDocument) {
 
                 if (newSenders.length > 0) {
                     console.log("New messages found!", gameId, newSenders);
-                    chrome.runtime.sendMessage({ type: MessageTypes.newMessages, newMessages: {
+                    const newMessages = {
                         gameId,
-                        gameName: newGamesMessageStatuses[gameId].gameName, //gamesMessageStatus.gameName,
+                        gameName: newGamesMessageStatuses[gameId].gameName,
                         from: newSenders
-                    } });
+                    }; 
+                    chrome.runtime.sendMessage(createMessage(MessageTypes.newMessages, newMessages));
                 }
             }
         }
@@ -126,26 +125,30 @@ function checkForNewMessages(newDocument) {
     });
 }
 
-console.log("Running webDiplomacy-plugin/home-notifier");
-// test lastNoticeTimestamp: 1611031121
-/* test gamesMessageStatuses {
-    341804: {
-        gameId: 341804,
-        gameName: "3e guerre mondiale dans un uni...",
-        messageData: {
-            Aus: false,
-            Eng: false,
-            Fra: false,
-            Ger: false,
-            Ita: false,
-            Rus: false,
-            Tur: false
+function initializeHomeState() {
+    // test lastNoticeTimestamp: 1611031121
+    /* test gamesMessageStatuses {
+        341804: {
+            gameId: 341804,
+            gameName: "3e guerre mondiale dans un uni...",
+            messageData: {
+                Aus: false,
+                Eng: false,
+                Fra: false,
+                Ger: false,
+                Ita: false,
+                Rus: false,
+                Tur: false
+            }
         }
-    }
-}*/
-chrome.storage.local.set({
-    [StorageKeys.lastNoticeTimestamp]: 0,
-    [StorageKeys.gamesMessageStatuses]: {}
-});
-executeIfAllowed(checkForUpdates)();
-setInterval(executeIfAllowed(checkForUpdates), 10 * SECONDS)
+    }*/
+    chrome.storage.local.set({
+        [StorageKeys.lastNoticeTimestamp]: 0,
+        [StorageKeys.gamesMessageStatuses]: {}
+    });
+}
+
+console.log("Running webDiplomacy-plugin/home-notifier");
+initializeHomeState();
+setIntervalStartNow(executeIfAllowed(checkForUpdates), 10 * SECONDS);
+chrome.runtime.onMessage.addListener(createMessageListener(MessageHandlers));

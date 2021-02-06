@@ -4,6 +4,7 @@
     "description": "Add features to the webDiplomacy website",
     "manifest_version": 2,
     "permissions": [
+        "tabs",
         "storage",
         "notifications",
         "*://www.webdiplomacy.net/*",
@@ -26,6 +27,14 @@
                 "*://webdiplomacy.net/index.php*"
             ],
             "js": ["constants.js", "core.js", "home-notifier.js"],
+            "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "*://www.webdiplomacy.net/board.php*",
+                "*://webdiplomacy.net/board.php*"
+            ],
+            "js": ["constants.js", "core.js", "game-notifier.js"],
             "run_at": "document_start"
         }
     ],

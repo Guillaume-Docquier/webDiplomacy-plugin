@@ -6,7 +6,8 @@ const StorageKeys = {
 
 const MessageTypes = {
     newNotice: "newNotice",
-    newMessages: "newMessages"
+    newMessages: "newMessages",
+    fetchYourself: "fetchYourself"
 };
 
 const ExtensionStates = {
@@ -23,3 +24,24 @@ const NotificationTypes = {
 };
 
 const DECIMAL_RADIX = 10;
+
+const SECONDS = 1000;
+const MINUTES = 60 * SECONDS;
+
+const WEBDIPLOMACY_URL_PATTERNS = [
+    "*://www.webdiplomacy.net/*",
+    "*://webdiplomacy.net/*"
+];
+
+const WebdiplomacyPages = {
+    HOME: "home",
+    GAME: "game"
+};
+
+const WebdiplomacyPathsToPageMap = {
+    "": WebdiplomacyPages.HOME,
+    "index": WebdiplomacyPages.HOME,
+    "board": WebdiplomacyPages.GAME,
+};
+
+const GAME_ID_SEARCH_PARAM = "gameID";
