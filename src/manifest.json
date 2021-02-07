@@ -36,7 +36,18 @@
             ],
             "js": ["constants.js", "core.js", "game-notifier.js"],
             "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "*://www.webdiplomacy.net/board.php*",
+                "*://webdiplomacy.net/board.php*"
+            ],
+            "js": ["game-enhancer.js"],
+            "run_at": "document_idle"
         }
+    ],
+    "web_accessible_resources": [
+        "images/*.png"
     ],
     "background": {
         "scripts": ["constants.js", "core.js", "background.js"],
