@@ -44,6 +44,11 @@ function widenPage() {
     const pageHeader = document.getElementById("header-container");
     pageHeader.style.maxWidth = "1348px";
 
+    const contentNotice = document.getElementsByClassName("content-notice");
+    if (contentNotice.length > 0) {
+        contentNotice[0].style.maxWidth = "1318px";
+    }
+
     const contentHeader = document.getElementsByClassName("content-board-header")[0];
     contentHeader.style.maxWidth = "1348px";
 
