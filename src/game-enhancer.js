@@ -58,8 +58,14 @@ function moveChatboxAnchor() {
     chatboxAnchor.style.top = "-178px";
 }
 
+function heightenChatbox() {
+    const chatboxScroll = document.getElementById("chatboxscroll");
+    chatboxScroll.style.maxHeight = "300px";
+}
+
 console.log("Running webDiplomacy-plugin/game-enhancer");
 toggleMapSize();
 addMapControls();
 widenPage();
 moveChatboxAnchor();
+heightenChatbox();
