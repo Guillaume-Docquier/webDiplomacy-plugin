@@ -1,8 +1,14 @@
-const executeIfAllowed = func => (...args) => {
-    chrome.storage.local.get([StorageKeys.extensionState], state => {
+const executeIfAllowed = (func, settingKey = "") => (...args) => {
+    chrome.storage.local.get([StorageKeys.extensionState, settingKey], state => {
         const extensionState = state[StorageKeys.extensionState];
-        if (extensionState === ExtensionStates.on) {
-            func(...args);
+        if (extensionState === Toggle.ON) {
+            const setting = state[settingKey];
+            if (!setting || setting === Toggle.ON) {
+                func(...args);
+            }
+            else {
+                console.log(`Setting ${settingKey} is ${setting}. Invocation of ${func.name} denied`);
+            }
         }
     });
 }

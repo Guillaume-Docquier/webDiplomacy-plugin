@@ -53,7 +53,7 @@ function checkForNewNotices(newDocument) {
             if (newNotices.length > 0) {
                 // TODO Probably notify latest for each game or summarize each game?
                 console.log("New notices found!", newNotices);
-                chrome.runtime.sendMessage(createMessage(MessageTypes.newNotice, { notice: newNotices[0] }));
+                executeIfAllowed(chrome.runtime.sendMessage, Settings.notifyOfNewNotice)(createMessage(MessageTypes.newNotice, { notice: newNotices[0] }));
             }
         }
     });
@@ -122,7 +122,7 @@ function checkForNewMessages(newDocument) {
                         gameName: newGamesMessageStatuses[gameId].gameName,
                         from: newSenders
                     };
-                    chrome.runtime.sendMessage(createMessage(MessageTypes.newMessages, { newMessages }));
+                    executeIfAllowed(chrome.runtime.sendMessage, Settings.notifyOfNewMessage)(createMessage(MessageTypes.newMessages, { newMessages }));
                 }
             }
         }

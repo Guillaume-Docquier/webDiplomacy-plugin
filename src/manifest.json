@@ -11,7 +11,8 @@
         "*://webdiplomacy.net/*"
     ],
     "browser_action": {
-        "default_icon": "webDiplomacy-logo.png"
+        "default_icon": "webDiplomacy-logo.png",
+        "default_popup": "extensionSettings.html"
     },
     "icons": {
         "16": "webDiplomacy-logo.png",

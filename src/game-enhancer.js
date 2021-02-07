@@ -2,10 +2,21 @@ const MAP_WRAPPER_ID = "mapstore";
 const MAP_IMG_ID = "mapImage";
 const RESIZE_BUTTON_ID = "resizeButton";
 
-const MapSize = {
-    SMALL: "small",
-    LARGE: "large"
-};
+function setMapSize() {
+    chrome.storage.local.get([Settings.defaultMapSize], state => {
+        const defaultMapSize = state[Settings.defaultMapSize];
+        const mapImage = document.getElementById(MAP_IMG_ID);
+        if (mapImage.src.includes(MapSize.SMALL)) {
+            mapImage.src = mapImage.src.replace(MapSize.SMALL, defaultMapSize);
+        }
+        else if (mapImage.src.includes(MapSize.LARGE)) {
+            mapImage.src = mapImage.src.replace(MapSize.LARGE, defaultMapSize);
+        }
+        else {
+            mapImage.src = `${mapImage.src}&mapType=${defaultMapSize}`;
+        }
+    });
+}
 
 function toggleMapSize() {
     const mapImage = document.getElementById(MAP_IMG_ID);
@@ -68,9 +79,13 @@ function heightenChatbox() {
     chatboxScroll.style.maxHeight = "300px";
 }
 
+function setupLargeMap() {
+    setMapSize();
+    addMapControls();
+    widenPage();
+    heightenChatbox();
+}
+
 console.log("Running webDiplomacy-plugin/game-enhancer");
-toggleMapSize();
-addMapControls();
-widenPage();
-moveChatboxAnchor();
-heightenChatbox();
+executeIfAllowed(moveChatboxAnchor)();
+executeIfAllowed(setupLargeMap, Settings.largeMapEnabled)();

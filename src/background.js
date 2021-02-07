@@ -39,22 +39,24 @@ function newHomePageHandler({ newContent }, sender) {
     });
 }
 
-function toggleExtensionState() {
-    chrome.storage.local.get([StorageKeys.extensionState], state => {
-        const extensionState = state[StorageKeys.extensionState];
+function initializeSettings() {
+    chrome.storage.local.get(Object.values(Settings), state => {
+        for (let settingName in Settings) {
+            if (!state[settingName]) {
+                state[settingName] = DefaultSettings[settingName];
+            }
+        }
 
-        const newExtensionState = extensionState === ExtensionStates.on ? ExtensionStates.off : ExtensionStates.on;
-        chrome.storage.local.set({ [StorageKeys.extensionState]: newExtensionState });
-        chrome.browserAction.setIcon({ path: `webDiplomacy-logo-${newExtensionState}.png`});
+        console.log("Settings", state);
+        chrome.storage.local.set(state);
     });
-};
+}
 
 function initializeBrowserActionIcon() {
-    chrome.storage.local.get([StorageKeys.extensionState], state => {
-        let extensionState = state[StorageKeys.extensionState];
+    chrome.storage.local.get([StorageKeys[Settings.extensionState]], state => {
+        let extensionState = state[StorageKeys[Settings.extensionState]];
         if (!extensionState) {
-            extensionState = ExtensionStates.on;
-            chrome.storage.local.set({ [StorageKeys.extensionState]: extensionState });
+            extensionState = DefaultSettings[Settings.extensionState];
         }
     
         chrome.browserAction.setIcon({ path: `webDiplomacy-logo-${extensionState}.png`});
@@ -106,7 +108,7 @@ function checkForUpdates() {
 }
 
 console.log("Running webDiplomacy-plugin/background");
+initializeSettings();
 initializeBrowserActionIcon();
-chrome.browserAction.onClicked.addListener(toggleExtensionState);
 chrome.runtime.onMessage.addListener(createMessageListener(MessageHandlers));
 setIntervalStartNow(executeIfAllowed(checkForUpdates), 10 * SECONDS);

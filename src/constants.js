@@ -1,5 +1,35 @@
-const StorageKeys = {
+const Settings = {
     extensionState: "extensionState",
+    notifyOfNewNotice: "notifyOfNewNotice",
+    notifyOfNewMessage: "notifyOfNewMessage",
+    largeMapEnabled: "largeMapEnabled",
+    defaultMapSize: "defaultMapSize"
+};
+
+const MapSize = {
+    SMALL: "small",
+    LARGE: "large"
+};
+
+const Toggle = {
+    ON: "on",
+    OFF: "off"
+};
+
+const DefaultSettings = {
+    [Settings.extensionState]: Toggle.ON,
+    [Settings.notifyOfNewNotice]: Toggle.ON,
+    [Settings.notifyOfNewMessage]: Toggle.ON,
+    [Settings.largeMapEnabled]: Toggle.ON,
+    [Settings.defaultMapSize]: MapSize.LARGE
+};
+
+const StorageKeys = {
+    [Settings.extensionState]: Settings.extensionState,
+    [Settings.notifyOfNewNotice]: Settings.notifyOfNewNotice,
+    [Settings.notifyOfNewMessage]: Settings.notifyOfNewMessage,
+    [Settings.largeMapEnabled]: Settings.largeMapEnabled,
+    [Settings.defaultMapSize]: Settings.defaultMapSize,
     lastNoticeTimestamp: "lastNoticeTimestamp",
     gamesMessageStatuses: "gamesMessageStatuses"
 };
@@ -10,11 +40,6 @@ const MessageTypes = {
     fetchYourself: "fetchYourself",
     newHomePage: "newHomePage",
     updatePageContent: "updatePageContent"
-};
-
-const ExtensionStates = {
-    on: "on",
-    off: "off"
 };
 
 // https://developer.chrome.com/docs/extensions/reference/notifications/#type-TemplateType
