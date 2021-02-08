@@ -20,13 +20,6 @@ function getWebdiplomacyPageFromUrlString(urlString) {
     return WebdiplomacyPathsToPageMap[path];
 }
 
-function createMessage(type, content = {}) {
-    return {
-        type,
-        ...content
-    };
-}
-
 function httpGet(url)
 {
     var xmlHttp = new XMLHttpRequest();
@@ -40,7 +33,18 @@ function setIntervalStartNow(func, delay) {
     return setInterval(func, delay);
 }
 
+function createMessage(type, content = {}) {
+    console.log(`[OUT] ${type}`);
+    const message = {
+        type,
+        ...content
+    };
+
+    return message;
+}
+
 const createMessageListener = MessageHandlers => (request, sender, sendResponse) => {
+    console.log(`[IN] ${request.type}`);
     const handler = MessageHandlers[request.type];
     if (handler) {
         handler(request, sender, sendResponse);

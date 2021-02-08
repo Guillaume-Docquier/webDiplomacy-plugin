@@ -1,6 +1,6 @@
 {
     "name": "webDiplomacy-plugin",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Add features to the webDiplomacy website",
     "manifest_version": 2,
     "permissions": [

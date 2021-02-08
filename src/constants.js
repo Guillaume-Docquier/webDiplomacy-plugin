@@ -35,6 +35,7 @@ const StorageKeys = {
 };
 
 const MessageTypes = {
+    wakeUp: "wakeUp",
     newNotice: "newNotice",
     newMessages: "newMessages",
     fetchYourself: "fetchYourself",

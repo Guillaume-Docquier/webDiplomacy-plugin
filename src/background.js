@@ -1,8 +1,13 @@
 const MessageHandlers = {
+    [MessageTypes.wakeUp]: wakeUpHandler,
     [MessageTypes.newNotice]: newNoticeHandler,
     [MessageTypes.newMessages]: newMessagesHandler,
     [MessageTypes.newHomePage]: newHomePageHandler
 };
+
+function wakeUpHandler() {
+    console.log("Yes yes, I'm awake!");
+}
 
 function newNoticeHandler({ notice }) {
     const { gameId, unixTimestamp, event, gameName } = notice;

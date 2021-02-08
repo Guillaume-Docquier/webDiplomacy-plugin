@@ -166,3 +166,4 @@ function initializeHomeState() {
 console.log("Running webDiplomacy-plugin/home-notifier");
 initializeHomeState();
 chrome.runtime.onMessage.addListener(createMessageListener(MessageHandlers));
+chrome.runtime.sendMessage(createMessage(MessageTypes.wakeUp));
