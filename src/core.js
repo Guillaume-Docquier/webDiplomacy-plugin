@@ -41,18 +41,13 @@ function setIntervalStartNow(func, delay) {
 }
 
 const createMessageListener = MessageHandlers => (request, sender, sendResponse) => {
-    console.groupCollapsed(`Received ${request.type} message`);
-
     const handler = MessageHandlers[request.type];
     if (handler) {
-        console.log(`Handler found: ${handler.name}`);
         handler(request, sender, sendResponse);
     }
     else {
-        console.error("No handler found!");
+        console.error(`No handler found for message ${request.type}`);
     }
-
-    console.groupEnd();
 };
 
 function domStringToDomElement(domString) {

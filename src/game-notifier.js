@@ -3,11 +3,9 @@ const MessageHandlers = {
 };
 
 function fetchYourselfHandler() {
-    console.log("TODO");
 }
 
 function initializeGameState() {
-    console.log("TODO");
 }
 
 console.log("Running webDiplomacy-plugin/game-notifier");

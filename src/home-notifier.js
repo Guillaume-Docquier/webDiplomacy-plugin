@@ -67,14 +67,14 @@ function parseMessagesStatus(gameDom) {
     const membersTableRows = gameDom.getElementsByClassName("homeMembersTableTr");
     const countryTds = membersTableRows[MEMBERS_TABLE_COUNTRIES_ROW_INDEX].getElementsByTagName("td");
     for (let i = 0; i < countryTds.length; i++) {
-        const country = countryTds[i].getElementsByTagName("span")[0].textContent;
+        const country = getCountryNameFromDom(countryTds, i);
         messageData[country] = false;
     }
 
     if (membersTableRows[MEMBERS_TABLE_MESSAGES_ROW_INDEX]) {
         const messageTds = membersTableRows[MEMBERS_TABLE_MESSAGES_ROW_INDEX].getElementsByTagName("td");
         for (let i = 0; i < countryTds.length; i++) {
-            const country = countryTds[i].getElementsByTagName("span")[0].textContent;
+            const country = getCountryNameFromDom(countryTds, i);
             const hasNewMessage = messageTds[i].getElementsByTagName("a").length > 0;
             messageData[country] = hasNewMessage;
         }
@@ -85,6 +85,15 @@ function parseMessagesStatus(gameDom) {
         gameName,
         messageData
     };
+}
+
+function getCountryNameFromDom(countryTds, countryIndex) {
+    let countryContentElement = countryTds[countryIndex].getElementsByTagName("span")[0];
+    if (!countryContentElement) {
+        countryContentElement = countryTds[countryIndex];
+    }
+
+    return countryContentElement.textContent;
 }
 
 function checkForNewMessages(newDocument) {
